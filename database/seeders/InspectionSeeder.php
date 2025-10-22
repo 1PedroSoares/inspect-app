@@ -6,7 +6,7 @@ use Illuminate\Database\Seeder;
 use App\Models\Inspection;
 use Carbon\Carbon;
 
-class InspecaoSeeder extends Seeder
+class InspectionSeeder extends Seeder
 {
     /**
      * Run the database seeds.
