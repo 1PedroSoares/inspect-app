@@ -14,7 +14,7 @@ class ViaCepService
      * @return array Os dados do endereço.
      * @throws \ValidationException Se o CEP for inválido ou não encontrado.
      */
-    public function consultar(string $cep): array
+    public function consultarCep(string $cep): array
     {
 
         // Limpa o CEP (remove traços/pontos).
@@ -28,7 +28,8 @@ class ViaCepService
         }
 
         // Armazeno a resposta da API em json atravéz do método GET.
-        $response = Http::get("https://viacep.com.br/ws/{$cepLimpo}/json/");
+        // $response = Http::get("https://viacep.com.br/ws/{$cepLimpo}/json/");
+        $response = Http::withoutVerifying()->get("https://viacep.com.br/ws/{$cepLimpo}/json/");
 
         // Trato a falha e retorno com uma mensagem de fácil interpretação.
         if ($response->failed() || $response->json('erro') === true) {
