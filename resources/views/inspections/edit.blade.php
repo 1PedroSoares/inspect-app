@@ -69,7 +69,18 @@
             <li id="no-items-message" class="list-group-item text-center text-muted">Nenhum item no checklist.</li>
             @endforelse
         </ul>
-    </div>
+
+        <div class="mt-4 text-end">
+            @if($inspection->status == 'Pendente')
+            <form action="{{ route('inspections.concluir', $inspection->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Deseja realmente concluir esta inspeção?')">
+                @csrf
+                <button type="submit" class="btn btn-success">Concluir Inspeção</button>
+            </form>
+            @else
+            <span class="btn btn-success disabled">Inspeção Concluída</span>
+            @endif
+        </div>
+        </div>
 </div>
 @endsection
 
@@ -90,7 +101,7 @@
         const noItemsMessage = $('#no-items-message');
         const isConcluida = {{ $inspection->status == 'Concluida' ? 1 : 0 }};
 
-        // 1. Adicionar Item (AJAX)
+        // Adiciono o Item (AJAX)
         $('#form-add-item').submit(function(e) {
             e.preventDefault();
 
@@ -103,7 +114,7 @@
                 type: 'POST',
                 data: {
                     descricao: descricao,
-                    obrigatorio: obrigatorio
+                    obrigatorio: obrigatorio // Envia true/false
                 },
                 success: function(newItem) {
                     // Limpa o formulário.
@@ -131,12 +142,24 @@
                     checklistContainer.append(newItemHtml);
                 },
                 error: function(xhr) {
-                    alert('Erro ao adicionar item: ' + xhr.responseJSON.message);
+                    // Tratamento de erro
+                    let errorMsg = 'Ocorreu um erro desconhecido.';
+                    if (xhr.responseJSON) {
+                        if (xhr.responseJSON.error) {
+                            errorMsg = xhr.responseJSON.error;
+                        } else if (xhr.responseJSON.errors) {
+                            const firstErrorKey = Object.keys(xhr.responseJSON.errors)[0];
+                            errorMsg = xhr.responseJSON.errors[firstErrorKey][0];
+                        } else if (xhr.responseJSON.message) {
+                            errorMsg = xhr.responseJSON.message;
+                        }
+                    }
+                    alert('Erro ao adicionar item: ' + errorMsg);
                 }
             });
         });
 
-        // 2. Marcar/Desmarcar Item (AJAX) - usando delegação de evento
+        // Marcar/Desmarcar Item (AJAX) - usando delegação de evento
         checklistContainer.on('change', '.form-check-input', function() {
             const checkbox = $(this);
             const itemId = checkbox.data('item-id');
@@ -153,14 +176,27 @@
                     checkbox.closest('li').toggleClass('text-decoration-line-through text-muted', updatedItem.concluido);
                 },
                 error: function(xhr) {
-                    alert('Erro: ' + xhr.responseJSON.error);
+                    // Tratamento de erro
+                    let errorMsg = 'Ocorreu um erro desconhecido.';
+                    if (xhr.responseJSON) {
+                        if (xhr.responseJSON.error) {
+                            errorMsg = xhr.responseJSON.error;
+                        } else if (xhr.responseJSON.errors) {
+                            const firstErrorKey = Object.keys(xhr.responseJSON.errors)[0];
+                            errorMsg = xhr.responseJSON.errors[firstErrorKey][0];
+                        } else if (xhr.responseJSON.message) {
+                            errorMsg = xhr.responseJSON.message;
+                        }
+                    }
+                    alert('Erro: ' + errorMsg);
+                    
                     // Desfaz a marcação se deu erro
                     checkbox.prop('checked', !concluido);
                 }
             });
         });
 
-        // 3. Remover Item (AJAX) - usando delegação de evento
+        // Remove Item (AJAX)
         checklistContainer.on('click', '.btn-remove-item', function() {
             if (isConcluida) {
                 alert('Não é possível remover itens de uma inspeção concluída.');
@@ -189,7 +225,11 @@
                     });
                 },
                 error: function(xhr) {
-                    alert('Erro: ' + xhr.responseJSON.error);
+                    let errorMsg = 'Ocorreu um erro desconhecido.';
+                    if (xhr.responseJSON && xhr.responseJSON.error) {
+                        errorMsg = xhr.responseJSON.error;
+                    }
+                    alert('Erro: ' + errorMsg);
                 }
             });
         });
