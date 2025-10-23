@@ -19,13 +19,14 @@ class ChecklistItemController extends Controller
      */
     public function store(Request $request, Inspection $inspection): JsonResponse
     {
+        // Valida apenas a descrição.
         $data = $request->validate([
             'descricao' => 'required|string|max:255',
-            'obrigatorio' => 'sometimes|boolean',
         ]);
 
-        // Garante que 'obrigatorio' seja false se não vier na request.
-        $data['obrigatorio'] = $request->input('obrigatorio', false);
+        // Usa $request->boolean() para processar o campo 'obrigatorio'
+        // e garantir que não vai enviar uma string "true" ou "false".
+        $data['obrigatorio'] = $request->boolean('obrigatorio');
 
         $item = $inspection->checklistItems()->create($data);
 
