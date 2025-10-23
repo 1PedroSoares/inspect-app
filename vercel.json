@@ -3,19 +3,19 @@
     "framework": null,
     "builds": [
         {
-            "src": "/public/index.php",
-            "use": "@vercel/php"
-        },
-        {
-            "src": "/api/index.php",
-            "use": "@vercel/php"
-        },
-        {
-            "src": "/build.sh",
+            "src": "build.sh",
             "use": "@vercel/static-build",
             "config": {
                 "distDir": "public"
             }
+        },
+        {
+            "src": "public/index.php",
+            "use": "@vercel/php"
+        },
+        {
+            "src": "api/index.php",
+            "use": "@vercel/php"
         }
     ],
     "routes": [
@@ -47,17 +47,16 @@
     "env": {
         "APP_ENV": "production",
         "APP_DEBUG": "false",
-        "APP_URL": "https://<SEU_DOMINIO_VERCEL>.vercel.app",
-        "APP_KEY": "<SUA_APP_KEY_GERADA>",
+        "APP_KEY": "<COLOQUE_SUA_APP_KEY_NO_PAINEL_DA_VERCEL>",
+        "APP_URL": "<COLOQUE_A_URL_DO_PROJETO_AQUI_NO_PAINEL>",
         "DB_CONNECTION": "mysql",
-        "DB_HOST": "<SEU_DB_HOST>",
-        "DB_PORT": "<SEU_DB_PORT>",
-        "DB_DATABASE": "<SEU_DB_DATABASE>",
-        "DB_USERNAME": "<SEU_DB_USERNAME>",
-        "DB_PASSWORD": "<SEU_DB_PASSWORD>",
+        "DB_HOST": "<CONFIGURE_NO_PAINEL_DA_VERCEL>",
+        "DB_PORT": "3306",
+        "DB_DATABASE": "<CONFIGURE_NO_PAINEL_DA_VERCEL>",
+        "DB_USERNAME": "<CONFIGURE_NO_PAINEL_DA_VERCEL>",
+        "DB_PASSWORD": "<CONFIGURE_NO_PAINEL_DA_VERCEL>",
         "SESSION_DRIVER": "cookie",
         "CACHE_DRIVER": "array",
-        "QUEUE_CONNECTION": "sync",
         "LOG_CHANNEL": "stderr"
     }
 }
