@@ -116,7 +116,12 @@ class InspectionController extends Controller
      */
     public function destroy(Inspection $inspection)
     {
+        // "SoftDeleta" todos os itens filhos primeiro.
+        $inspection->checklistItems()->delete();
+
+        // Depois "SoftDeleta" a inspeção pai.
         $inspection->delete();
+
         return redirect()->route('inspections.index')
             ->with('success', 'Inspeção excluída com sucesso.');
     }

@@ -4,9 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Inspection extends Model
 {
+    use SoftDeletes;
+
     /**
      * Campos que podem ser preenchidos repidamente.
      *
