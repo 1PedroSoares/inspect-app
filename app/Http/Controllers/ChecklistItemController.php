@@ -44,10 +44,11 @@ class ChecklistItemController extends Controller
      */
     public function update(Request $request, ChecklistItem $checklistItem): JsonResponse
     {
-        // Valida apenas o campo 'concluido'.
-        $data = $request->validate([
-            'concluido' => 'required|boolean',
-        ]);
+        // Converte corretamente "true" (string) para true (booleano).
+        $concluido = $request->boolean('concluido');
+
+        // Cria o array de dados manualmente.
+        $data = ['concluido' => $concluido];
 
         // Impede o usuário de desmarcar um item se a inspeção já estiver concluída.
         if ($checklistItem->inspection->status === 'Concluida' && $data['concluido'] === false) {
